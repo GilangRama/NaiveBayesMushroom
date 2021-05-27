@@ -1,0 +1,132 @@
+import pandas as pd
+import pickle
+import numpy as np
+
+from sklearn.naive_bayes import CategoricalNB
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.preprocessing import LabelEncoder
+
+mushroom = pd.read_csv("jamur.csv")
+
+df = mushroom.copy()
+# target = 'class'
+# encode = ['cap-shape', 'cap-surface', 'cap-color', 'odor', 'gill-spacing', 'gill-size',
+#                'gill-color', 'stalk-shape', 'stalk-root', 'stalk-surface-above-ring', 'stalk-surface-below-ring',
+#                'stalk-color-above-ring', 'stalk-color-below-ring', 'veil-color', 'ring-number', 'ring-type',
+#                'spore-print-color', 'population', 'habitat']
+#
+# for col in encode:
+#     dummy = pd.get_dummies(df[col], prefix=col)
+#     df = pd.concat([df, dummy], axis=1)
+#     del df[col]
+#
+# target_mapper = {'p':0, 'e':1}
+# def target_encode(val):
+#     return target_mapper[val]
+#
+# df['class'] = df['class'].apply(target_encode)
+
+le = LabelEncoder()
+for i in df.columns:
+    df[i]=le.fit_transform(df[i])
+
+print(df.head())
+
+x = df.drop('class', axis=1)
+y = df['class']
+
+# print(x)
+# print(y)
+
+# split dataset
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size= 0.2, random_state=0)
+
+# build categorical naive bayes
+cn = CategoricalNB()
+cn.fit(x_train, y_train)
+
+# cn.fit(x, y)
+
+# predict value
+y_pred = cn.predict(x)
+
+cm = confusion_matrix(y_test, y_pred)
+print('confusion matrix: \n', cm)
+
+acc = accuracy_score(y_test, y_pred)
+print('Accuracy: {:.2f}', acc)
+
+cr = classification_report(y_test, y_pred)
+print("Classification Report", cr)
+
+# saving the model
+# pickle.dump(cn, open('mushroom_cn.pkl', 'wb'))
+
+
+
+
+
+
+
+
+
+
+import pandas as pd
+import pickle
+import numpy as np
+
+from sklearn.naive_bayes import CategoricalNB, BernoulliNB
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.preprocessing import LabelEncoder
+
+df = pd.read_csv("jamur.csv")
+
+# df = mushroom.copy()
+# target = 'class'
+# encode = ['cap-shape', 'cap-surface', 'cap-color', 'odor', 'gill-spacing', 'gill-size',
+#                'gill-color', 'stalk-shape', 'stalk-root', 'stalk-surface-above-ring', 'stalk-surface-below-ring',
+#                'stalk-color-above-ring', 'stalk-color-below-ring', 'veil-color', 'ring-number', 'ring-type',
+#                'spore-print-color', 'population', 'habitat']
+
+
+le = LabelEncoder()
+for i in df.columns:
+    df[i]=le.fit_transform(df[i])
+
+print(df.head())
+
+x = df.drop('class', axis=1)
+y = df['class']
+
+print(x)
+print(y)
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size= 0.2, random_state=0)
+
+# cn = CategoricalNB()
+bn = BernoulliNB()
+
+# cn.fit(x_train, y_train)
+bn.fit(x_train, y_train)
+
+# y_pred = cn.predict(x_test)
+y_pred = bn.predict(x_test)
+
+cm = confusion_matrix(y_test, y_pred)
+print('confusion matrix: \n', cm)
+
+acc = accuracy_score(y_test, y_pred)
+print('Accuracy: {:.2f}', acc)
+
+cr = classification_report(y_test, y_pred)
+print("Classification Report", cr)
+
+# save the model
+pickle.dump(bn, open('mushroom_cn.pkl', 'wb'))
+
+
+
+
+

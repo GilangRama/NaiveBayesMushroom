@@ -1,0 +1,12 @@
+@st.cache
+def loadDataset(nrows):
+    data = pd.read_csv("jamur.csv")
+    return data
+
+data_load_state = st.text('Loading Data...')
+mushroom = loadDataset(50)
+
+st.subheader('Mushroom')
+st.write(mushroom)
+#
+# st.bar_chart(mushroom)
